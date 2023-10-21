@@ -1,0 +1,168 @@
+openapi: "3.0.0"
+info:
+  title: "Binar Challenge Chapter 05"
+  description: "Binar rental car management API"
+  version: "1.0.0"
+tags:
+  - name: "Cars"
+    description: "API for Cars resources"
+  - name: "Users"
+    description: "API for Users resources"
+servers: ["url": "http://localhost:8000/"]
+
+paths:
+  # get all car
+  /api/v1/cars:
+    get:
+      tags:
+        - Cars
+      responses:
+        "200":
+          description: "List of all cars"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "INTERNAL SERVER ERROR"
+                      message:
+                        type: string
+                        example: "Something is error"
+    post:
+      tags:
+        - Cars
+      security:
+        - bearerToken: []
+      summary: "Create one car"
+      description: "Return created car data"
+      requestBody:
+        description: "request body for input car data"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Esemka"
+                price:
+                  type: float
+                  example: 100000
+                available:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: "medium"
+                image:
+                  type: string
+                  example: "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650"
+                createdBy:
+                  type: integer
+                  example: 1
+                lastUpdatedBy:
+                  type: integer
+                  example: 1
+      responses:
+        "201":
+          description: "Response for success creating car"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created car data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+
+  # get one car
+  /api/v1/cars/{carId}:
+    get:
+      summary: "Get one car by id"
+      tags:
+        - Cars
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: integer
+            required: true
+            description: "Numeric ID of the car to get"
+      responses:
+        "200":
+          description: "List of all cars"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "INTERNAL SERVER ERROR"
+                      message:
+                        type: string
+                        example: "Something is error"
+        "404":
+          description: "Car not found"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "INTERNAL SERVER ERROR"
+                      message:
+                        type: string
+                        example: "Car is not found"
+
+components:
+  securitySchemes:
+    bearerToken:
+      type: "http"
+      scheme: bearer
