@@ -19,11 +19,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   Auth.init(
     {
-      userId: DataTypes.INTEGER,
-      email: DataTypes.STRING,
-      password: {
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      email: {
         type: DataTypes.STRING,
         unique: true,
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {

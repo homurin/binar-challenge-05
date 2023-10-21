@@ -6,14 +6,26 @@ info:
 tags:
   - name: "Cars"
     description: "API for Cars resources"
-  - name: "Users"
+  - name: "Superadmin"
+    description: "API for Users resources"
+  - name: "Admin"
+    description: "API for Cars resources"
+  - name: "Member"
     description: "API for Users resources"
 servers: ["url": "http://localhost:8000/"]
+
+components:
+  securitySchemes:
+    bearerToken:
+      type: "http"
+      scheme: bearer
 
 paths:
   # get all car
   /api/v1/cars:
     get:
+      summary: "Get all car data"
+      description: "Show all car data"
       tags:
         - Cars
       responses:
@@ -32,10 +44,20 @@ paths:
                     properties:
                       name:
                         type: string
-                        example: "INTERNAL SERVER ERROR"
-                      message:
+                        example: "carname"
+                      price:
+                        type: float
+                        example: 100000
+                      available:
+                        type: boolean
+                        example: true
+                      category:
                         type: string
-                        example: "Something is error"
+                        example: "medium"
+                      image:
+                        type: string
+                        example: "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650"
+    # post car
     post:
       tags:
         - Cars
@@ -44,7 +66,7 @@ paths:
       summary: "Create one car"
       description: "Return created car data"
       requestBody:
-        description: "request body for input car data"
+        description: "Request body for input car data using JSON and Multipartform"
         content:
           application/json:
             schema:
@@ -65,12 +87,26 @@ paths:
                 image:
                   type: string
                   example: "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650"
-                createdBy:
-                  type: integer
-                  example: 1
-                lastUpdatedBy:
-                  type: integer
-                  example: 1
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Esemka"
+                price:
+                  type: float
+                  example: 100000
+                available:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: "medium"
+                image:
+                  type: string
+                  format: binary
       responses:
         "201":
           description: "Response for success creating car"
@@ -107,7 +143,6 @@ paths:
                       message:
                         type: string
                         example: "Invalid input data"
-
   # get one car
   /api/v1/cars/{carId}:
     get:
@@ -121,6 +156,7 @@ paths:
             type: integer
             required: true
             description: "Numeric ID of the car to get"
+
       responses:
         "200":
           description: "List of all cars"
@@ -137,10 +173,20 @@ paths:
                     properties:
                       name:
                         type: string
-                        example: "INTERNAL SERVER ERROR"
-                      message:
+                        example: "carname"
+                      price:
+                        type: float
+                        example: 100000
+                      available:
+                        type: boolean
+                        example: true
+                      category:
                         type: string
-                        example: "Something is error"
+                        example: "medium"
+                      image:
+                        type: string
+                        example: "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650"
+
         "404":
           description: "Car not found"
           content:
@@ -161,8 +207,686 @@ paths:
                         type: string
                         example: "Car is not found"
 
-components:
-  securitySchemes:
-    bearerToken:
-      type: "http"
-      scheme: bearer
+    # update on car
+    patch:
+      summary: "Update one car data by id"
+      tags:
+        - Cars
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: integer
+            required: true
+            description: "Numeric ID of the car to update"
+      security:
+        - bearerToken: []
+      requestBody:
+        description: "request body for update car data"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Nitrozeus"
+                price:
+                  type: float
+                  example: 1000000
+                available:
+                  type: boolean
+                  example: false
+                category:
+                  type: string
+                  example: "medium"
+                image:
+                  type: string
+                  example: "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Esemka"
+                price:
+                  type: float
+                  example: 100000
+                available:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: "medium"
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: "Show edited car data"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "success"
+                      data:
+                        type: string
+                        example: "car data"
+        "404":
+          description: "Car not found"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "INTERNAL SERVER ERROR"
+                      message:
+                        type: string
+                        example: "Car is not found"
+    # delete one car
+    delete:
+      summary: "Delete one car by id"
+      tags:
+        - Cars
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: integer
+            required: true
+            description: "Numeric ID of the car to delete"
+      security:
+        - bearerToken: []
+      responses:
+        "201":
+          description: "Success message for deleted car"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Something is error"
+        "404":
+          description: "Car not found"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "failed"
+                      message:
+                        type: string
+                        example: "Car is not found"
+
+  /api/v1/superadmin/login:
+    # login into admin account
+    post:
+      tags:
+        - Superadmin
+      security:
+        - bearerToken: []
+      summary: "Login into superadmin account"
+      description: "Return token which contain user with superadmin role"
+      requestBody:
+        description: "Request body for login into user account with superadmin role data using JSON and Multipartform"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "peter@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "peter@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+      responses:
+        "200":
+          description: "Response for success login into user account with superadmin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created user data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+  /api/v1/superadmin/me:
+    # check user with admin role account data
+    get:
+      tags:
+        - Superadmin
+      security:
+        - bearerToken: []
+      summary: "Check one user data with superadmin role"
+      description: "Return one user data with superadmin role data using bearer jwt token"
+      responses:
+        "200":
+          description: "Response for success creating user with superadmin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "success"
+                      token:
+                        type: string
+                        example: "tokendata"
+        "404":
+          description: "Error response when token is empty or invalid role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  message:
+                    type: string
+                    example: "Token is empty"
+
+  /api/v1/admins/register:
+    # register or create one admin account
+    post:
+      tags:
+        - Admin
+      security:
+        - bearerToken: []
+      summary: "Create one user with admin role"
+      description: "Return created user with admin role data"
+      requestBody:
+        description: "Request body for input user with admin role data using JSON and Multipartform"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Megatron Griffin"
+                age:
+                  type: integer
+                  example: 15
+                address:
+                  type: string
+                  example: "California"
+                email:
+                  type: string
+                  example: "megatron@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Megatron Griffin"
+                age:
+                  type: integer
+                  example: 15
+                address:
+                  type: string
+                  example: "California"
+                email:
+                  type: string
+                  example: "megatron@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+      responses:
+        "201":
+          description: "Response for success creating user account with admin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created user data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+
+  /api/v1/admins/login:
+    # login into admin account
+    post:
+      tags:
+        - Admin
+      security:
+        - bearerToken: []
+      summary: "Show one user data with admin role"
+      description: "Return one user data with admin role data"
+      requestBody:
+        description: "Request body for login into user account with admin role data using JSON and Multipartform"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "megatron@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "megatron@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+      responses:
+        "200":
+          description: "Response for success login into user account with admin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created user data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+  /api/v1/admins/me:
+    # check user with admin role account data
+    get:
+      tags:
+        - Admin
+      security:
+        - bearerToken: []
+      summary: "Check one user data with admin role"
+      description: "Return one user data with admin role data using bearer jwt token"
+      responses:
+        "200":
+          description: "Response for success creating user with admin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "success"
+                      token:
+                        type: string
+                        example: "tokendata"
+        "404":
+          description: "Error response when token is empty or invalid role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  message:
+                    type: string
+                    example: "Token is empty"
+
+  /api/v1/members/register:
+    # register or create one user with role member account
+    post:
+      tags:
+        - Member
+      security:
+        - bearerToken: []
+      summary: "Create one user with member role"
+      description: "Return created user with member role data"
+      requestBody:
+        description: "Request body for input user with member role data using JSON and Multipartform"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Brian Griffin"
+                age:
+                  type: integer
+                  example: 15
+                address:
+                  type: string
+                  example: "Ohio"
+                email:
+                  type: string
+                  example: "brian@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Brian Griffin"
+                age:
+                  type: integer
+                  example: 15
+                address:
+                  type: string
+                  example: "Ohio"
+                email:
+                  type: string
+                  example: "brian@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+      responses:
+        "201":
+          description: "Response for success creating user with member role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created user data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+
+  /api/v1/members/login:
+    # login into admin account
+    post:
+      tags:
+        - Member
+      security:
+        - bearerToken: []
+      summary: "Show one user account data with member role"
+      description: "Return one user account data with admin role data"
+      requestBody:
+        description: "Request body for login into user account with member role data using JSON and Multipartform"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "brian@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "brian@gmail.com"
+                password:
+                  type: string
+                  example: "griffin123456"
+                confirmPassword:
+                  type: string
+                  example: "griffin123456"
+      responses:
+        "200":
+          description: "Response for success login into user account with member role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "created"
+                      message:
+                        type: string
+                        example: "created user data"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Invalid input data"
+  /api/v1/members/me:
+    # check user with admin role account data
+    get:
+      tags:
+        - Member
+      security:
+        - bearerToken: []
+      summary: "Check one user data with admin role"
+      description: "Return one user data with admin role data using bearer jwt token"
+      responses:
+        "200":
+          description: "Response for success creating member with admin role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Error"
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: "success"
+                      token:
+                        type: string
+                        example: "tokendata"
+        "401":
+          description: "Error response when token is empty or invalid role"
+          content:
+            application/json:
+              shcema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "failed"
+                  message:
+                    type: string
+                    example: "Token is empty"

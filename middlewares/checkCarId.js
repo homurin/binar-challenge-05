@@ -1,13 +1,14 @@
 const ApiError = require("../utils/apiError");
+const Car = require("../services/carService");
 
 const createValidation = async (req, res, next) => {
+  const id = req.params.id;
   try {
-    const category = ["small", "medium", "large"];
-    if (!category.includes(req.body.category)) {
-      next(new ApiError(`Please insert valid category like ${category}`));
+    const car = await Car.findByPk(id);
+    if (!car) {
+      next(new ApiError(`Car with id ${id} not found`, 404));
       return;
     }
-
     next();
   } catch (err) {
     next(new ApiError("Internal server error", 500));

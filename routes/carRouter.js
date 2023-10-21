@@ -3,7 +3,8 @@ const carController = require("../controllers/carController.js");
 const authentication = require("../middlewares/authentication.js");
 const checkRole = require("../middlewares/checkRole.js");
 const upload = require("../middlewares/multer.js");
-const createValidation = require("../middlewares/createValidation.js");
+const carValidation = require("../middlewares/carValidation.js");
+const checkCarId = require("../middlewares/checkCarId.js");
 
 const router = Router();
 router
@@ -13,20 +14,22 @@ router
     authentication,
     checkRole("superadmin", "admin"),
     upload.single("image"),
-    createValidation,
+    carValidation,
     carController.createCar
   );
 router
   .route("/:id")
-  .get(carController.findOneCarById)
+  .get(checkCarId, carController.findOneCarById)
   .patch(
     authentication,
     checkRole("superadmin", "admin"),
+    checkCarId,
     upload.single("image"),
-    createValidation,
+    carValidation,
     carController.updateCar
   )
   .delete(
+    checkCarId,
     authentication,
     checkRole("superadmin", "admin"),
     carController.deleteCarById

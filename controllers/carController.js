@@ -63,8 +63,6 @@ const createCar = async (req, res, next) => {
       data: newCar,
     });
   } catch (err) {
-    console.log(err);
-    // console.log(err.stack);
     next(new ApiError(err.message, 400));
   }
 };
@@ -79,7 +77,7 @@ const updateCar = async (req, res, next) => {
     if (file) {
       const fileName = file.originalname;
       const extension = path.extname(fileName);
-      const image = imagekit.upload({
+      const image = await imagekit.upload({
         file: file.buffer,
         fileName: `IMG-${Date.now()}.${extension}`,
       });
@@ -112,7 +110,7 @@ const deleteCarById = async (req, res, next) => {
     const deletedCar = await Car.deleteByPk(carId);
     res.status(201).json({
       status: "success",
-      data: deletedCar,
+      message: deletedCar,
     });
   } catch (err) {
     console.log(err);

@@ -5,7 +5,7 @@ const checkRole = (...role) => {
     try {
       console.log(req.user.role);
       if (!role.includes(req.user.role)) {
-        next(new ApiError(`Your role is not ${role.join(" and ")}`), 401);
+        next(new ApiError(`Your role is not ${role.join(" and ")}`, 401));
         return;
       }
       const userRole = "superadmin" ? "admin" : "member";

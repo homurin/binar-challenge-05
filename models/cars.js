@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       price: {
         type: DataTypes.FLOAT,
-
         allowNull: false,
       },
       available: {
@@ -43,10 +42,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       image: {
         type: DataTypes.STRING,
+        allowNull: false,
         defaultValue:
           "https://akcdn.detik.net.id/visual/2019/09/06/4cdd6470-59c4-4092-8664-0adaaa0eeebf_169.jpeg?w=650",
       },
-      lastUpdatedBy: DataTypes.INTEGER,
+      lastUpdatedBy: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,

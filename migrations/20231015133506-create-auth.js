@@ -11,6 +11,7 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING,
@@ -18,6 +19,7 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

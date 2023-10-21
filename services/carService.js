@@ -65,7 +65,9 @@ const create = async (data) => {
 
 const update = async (data, primaryKey) => {
   try {
-    const car = await carRepository.update(data, primaryKey);
+    await carRepository.update(data, primaryKey);
+    const car = await findByPk(primaryKey);
+
     return car;
   } catch (err) {
     throw new Error(err);
@@ -74,8 +76,8 @@ const update = async (data, primaryKey) => {
 
 const deleteByPk = async (primaryKey) => {
   try {
-    const deletedCar = await carRepository.deleteByPk(primaryKey);
-    return deletedCar;
+    await carRepository.deleteByPk(primaryKey);
+    return `Success delete car with id ${primaryKey}`;
   } catch (err) {
     throw new Error(err.message);
   }

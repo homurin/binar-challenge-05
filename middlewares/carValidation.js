@@ -1,14 +1,7 @@
 const ApiError = require("../utils/apiError");
-const Car = require("../services/carService");
 
-const modifyValidation = async (req, res, next) => {
-  const carId = req.params.id;
+const createValidation = async (req, res, next) => {
   try {
-    const isCarExist = await Car.findByPk(carId);
-    if (!isCarExist) {
-      next(new ApiError("Car not found", 404));
-      return;
-    }
     const category = ["small", "medium", "large"];
     if (!category.includes(req.body.category)) {
       next(new ApiError(`Please insert valid category like ${category}`));
@@ -20,4 +13,4 @@ const modifyValidation = async (req, res, next) => {
   }
 };
 
-module.exports = modifyValidation;
+module.exports = createValidation;
