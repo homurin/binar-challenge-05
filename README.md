@@ -79,7 +79,7 @@ After download all dependencis and configure .env file, Last step is do postgres
 
 sequelize db:create
 sequelize db:migrate
-sequelize db:migrate:all
+sequelize db:seed:all
 ```
 
 ## API Documentations
